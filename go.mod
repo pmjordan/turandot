@@ -19,6 +19,7 @@ require (
 	github.com/tliron/reposure v0.0.0-00010101000000-000000000000
 	github.com/tliron/yamlkeys v1.3.5
 	golang.org/x/crypto v0.0.0-20210322153248-0c34fe9e7dc2
+	gopkg.in/yaml.v3 v3.0.0-20210107192922-496545a6307b
 	k8s.io/api v0.21.0
 	k8s.io/apiextensions-apiserver v0.21.0
 	k8s.io/apimachinery v0.21.0
