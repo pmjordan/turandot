@@ -12,6 +12,7 @@ function create {
 
 function destroy {
     az group delete --name $RESOURCEGROUP --yes
+    az group delete --name NetworkWatcherRG --yes
 }
 
 function connect {
