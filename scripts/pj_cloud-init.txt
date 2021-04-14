@@ -21,7 +21,7 @@ runcmd:
   - sudo chown azureuser:azureuser /home/azureuser/startup.sh
   - /home/azureuser/startup.sh
   - cd /opt
-  - git clone https://github.com/pmjordan/turandot.git
+  - git clone --branch mymaster --single-branch https://github.com/pmjordan/turandot.git
   - chown -R root:turandot /opt/turandot
   - chmod -R g+w /opt/turandot
   - /opt/turandot/scripts/pj_install.sh
