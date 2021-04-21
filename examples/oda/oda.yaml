@@ -61,7 +61,7 @@ topology_template:
             metadataNamePostfix: ''
             template:
               containers:
-              - name:hello-world
+              - name: hello-world
                 image: docker.io/paulbouwer/hello-kubernetes:1.8
                 imagePullPolicy: Always
         web:

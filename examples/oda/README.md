@@ -13,7 +13,7 @@ Building the CSAR
 Deploying
 ---------
 
-    turandot service deploy hello-world --file=dist/hello-world.csar
+    turandot service deploy oda --file=dist/oda.csar
 
 If you want to access the deployed web server from outside the cluster you will need to have
 loadbalancing supported on your Kubernetes cluster. On Minikube you can just
@@ -22,4 +22,4 @@ loadbalancing supported on your Kubernetes cluster. On Minikube you can just
 If supported, the "url" output of the service template will work. To open from your default web
 browser:
 
-    xdg-open $(turandot service output hello-world url)
+    xdg-open $(turandot service output oda url)
