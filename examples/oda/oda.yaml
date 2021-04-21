@@ -3,7 +3,7 @@ tosca_definitions_version: tosca_simple_yaml_1_3
 metadata:
 
   # This scriptlet is used by the "configure" interface
-  puccini.scriptlet.import:hello-world.set-output: artifacts/scriptlets/set-output.js
+  puccini.scriptlet.import:oda.set-output: artifacts/scriptlets/set-output.js
 
 imports:
 
@@ -45,7 +45,7 @@ topology_template:
 
   node_templates:
 
-    hello-world:
+    oda:
       type: Application
       capabilities:
         metadata:
@@ -55,13 +55,13 @@ topology_template:
             # the Turandot operator 
             namespace: { get_input: namespace }
             labels:
-              app.kubernetes.io/name: hello-world
+              app.kubernetes.io/name: oda
         deployment:
           properties:
             metadataNamePostfix: ''
             template:
               containers:
-              - name: hello-world
+              - name: oda
                 image: docker.io/paulbouwer/hello-kubernetes:1.8
                 imagePullPolicy: Always
         web:
@@ -89,7 +89,7 @@ topology_template:
             - configure # See below
         normal.2:
           inputs:
-            scriptlet: hello-world.set-output
+            scriptlet: oda.set-output
             arguments:
               name: initialized
               value: 'true'
@@ -105,7 +105,7 @@ topology_template:
     url:
       # Before a real attribute value arrives this will evaluate to "http://<unknown>:80"
       type: string
-      value: { concat: [ http://, { get_attribute: [ hello-world, web, ingress, 0, ip ] }, ':80' ] }
+      value: { concat: [ http://, { get_attribute: [ oda, web, ingress, 0, ip ] }, ':80' ] }
 
     initialized:
       type: boolean
