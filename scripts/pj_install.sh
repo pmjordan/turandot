@@ -11,7 +11,8 @@ wget -O reposure.rpm https://github.com/tliron/reposure/releases/download/v0.1.3
 sudo rpm -ivh reposure.rpm
 
 #Install puccini binary
-wget -O puccini.rpm https://github.com/tliron/puccini/releases/download/v0.17.0/puccini_0.17.0_linux_amd64.rpm
+# pin to version 15 as higher version require glibc v 2.32 which is not available in OS images available in azure
+wget -O puccini.rpm https://github.com/tliron/puccini/releases/download/v0.15.0/puccini_0.15.0_linux_amd64.rpm
 sudo rpm -ivh puccini.rpm
 
 #Install kubectl and minikube here as can't get them from cloud-init packages
