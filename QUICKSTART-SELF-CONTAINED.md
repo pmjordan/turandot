@@ -14,6 +14,7 @@ files and helper scripts:
 If you prefer to read code rather than prose, check out the [`lab/`](lab/) directory,
 where we have scripts that do much of what is explained here.
 
+
 Requirements
 ------------
 
@@ -31,7 +32,7 @@ in order to package our CSAR. It's generally useful to have Puccini available in
 order to validate and otherwise work with your TOSCA and CSAR.
 
 A few other tools used by the scripts: `podman` (or `docker`), `pigz` (or `gzip`),
-`zip`, `zipinfo`, `tar`.
+`zip`, `zipinfo`, `tar`, `jq`.
 
 ### Kubernetes Cluster
 
@@ -51,6 +52,7 @@ default namespace:
     kubectl create namespace workspace
     kubectl config set-context --current --namespace=workspace
 
+
 Installing the Operators
 ------------------------
 
@@ -59,17 +61,18 @@ in order to permit them access to the authentication and authorization secrets n
 to connect to the registry (see below), because those secrets may be stored outside of
 your namespace.
 
-If you indeed need access to secrets, for testing you can use "view" role, which already
-exists in most Kubernetes deployments. It will allow read-access to any resource in any
+If you indeed need access to secrets for testing you can use "view" role, which already
+exists in most Kubernetes deployments. It allows read-access to any resource in any
 namespace.
 
 (For production systems you would want more tightened security, in which case it would
-be a good idea to create a custom cluster role that would allow access to just the registry)
-secrets and nothing else. Doing so is beyond the scope of this guide.
+be a good idea to create a custom cluster role that would allow access to just the
+registry secrets and nothing else. Doing so is beyond the scope of this guide.)
 
-To install the operators with the "view" cluster role you can use this command:
+To install the operators with the "view" cluster role you can use these commands:
 
-    turandot operator install --site=central --role=view --wait -v
+    turandot operator install --role=view --site=central --wait -v
+    reposure operator install --role=view --wait -v
 
 Here we're also giving this cluster the "central" site identifier. This will be used
 for multi-cluster policy-based TOSCA service composition.
@@ -79,9 +82,10 @@ direct links for [Turandot](https://hub.docker.com/r/tliron/turandot-operator),
 [Reposure operator](https://hub.docker.com/r/tliron/reposure-operator), and
 [Reposure surrogate](https://hub.docker.com/r/tliron/reposure-surrogate).
 
-The `--wait` flag tells the command to block until the operators are running
+The `--wait` flag tells the commands to block until the operators are running
 successfully. The `-v` flag adds more verbosity so you can see what the command is
 doing. (You can use `-vv` for even more verbosity.)
+
 
 Configuring the Registry
 ------------------------
@@ -117,33 +121,37 @@ small deployments.
 
 Installing the "simple" registry is simple, but configuring your Kubernetes container
 runtime to accept it is beyond the scope of this guide. Specifically you would need to
-allow it to accept your TLS certificate or your custom certificate authority. The extra
-challenge of working with TLS certificates for cloud workloads is that the certificate
-is tied to either an IP address (which may change) or a DNS domain name, which may be
-local and custom.
+allow it to accept your TLS certificate or your custom certificate authority.
 
 However, if you can configure your container runtime to at least accept self-signed
 certificates (so-called "insecure" mode, which in Minikube is enabled via the
 [`--insecure-registry`](https://minikube.sigs.k8s.io/docs/handbook/registry/) flag),
-then Reposure's "simple" registry can provision such a self-signed certificate for you
-by using [cert-manager](https://github.com/jetstack/cert-manager).
+then Reposure's "simple" registry can provision such a self-signed certificate for
+you.
 
-Assuming your container runtime is "insecure", you can start by installing cert-manager
-via our included script:
+To do so Reposure relies on [cert-manager](https://github.com/jetstack/cert-manager),
+which does a lot of the heavy lifting required for provisioning and updating
+certificates. (The additional challenge of working with TLS certificates in cloud
+environments is that IP addresses change, so that certificates either have to be
+updated or tied to a DNS domain name, and then DNS management may be local and custom.)
 
-    lab/cert-manager/deploy
+So, assuming your container runtime is "insecure", you can start by installing
+cert-manager:
+
+    kubectl apply --filename=https://github.com/jetstack/cert-manager/releases/download/v1.3.1/cert-manager.yaml
 
 And then install the "simple" registry with self-signed authentication like so:
 
     reposure simple install --authentication --wait -v
 
-And then configure the registry:
+Finally, configure the registry:
 
     reposure registry create default --provider=simple --wait -v
 
 (Note that if you are using the "simple" registry with authentication then you don't
-need to install the operators with `--role=view`, because it stores its secrets in
-its namespace.)
+need to install the operators with `--role=view`, because the "simple" registry stores
+its certificate secrets within its namespace.)
+
 
 Building the Self-Contained CSAR
 --------------------------------
@@ -164,6 +172,7 @@ tarball you created above) into a CSAR:
     examples/self-contained/scripts/build-csar
 
 The CSAR file should now sit in the "dist" directory.
+
 
 Deploying "Self-Contained"
 --------------------------
@@ -188,10 +197,13 @@ deployed.
 
 If you're using Minikube, it comes with a
 [primitive ingress solution](https://minikube.sigs.k8s.io/docs/commands/tunnel/) based on ssh
-tunneling that can be useful for testing. To run it (blocking):
+tunneling that can be useful for testing. To run it (it's blocking, so you might want to do
+it in a separate terminal session):
 
     minikube tunnel
 
-Once the tunnel is up, the LoadBalancer should get its IP address, and soon Turandot will
-update the "url" output with the correct URL, which you should be able to access with a
-web browser.
+Once the tunnel is up, the LoadBalancer should get its IP address, and Turandot would soon
+update the "url" output with the correct URL. You can then use curl or a web browser to access
+it:
+
+    xdg-open $(turandot service output self-contained url)

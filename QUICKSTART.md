@@ -14,6 +14,7 @@ files and helper scripts:
 If you prefer to read code rather than prose, check out the [`lab/`](lab/) directory,
 where we have scripts that do much of what is explained here.
 
+
 Requirements
 ------------
 The requirements can be installed manually as detailed in the sections below but scripts/pj_cloud-init.txt and scripts/pj_install.sh are provided for use when installing turandot on a new cloud VM using Centos. For example scripts/pj_azure_vm.sh uses those to create a VM on Azure.
@@ -48,22 +49,22 @@ work. To make commands more succinct in this guide let's set a default namespace
     kubectl create namespace workspace
     kubectl config set-context --current --namespace=workspace
 
+
 Installing the Operator
 -----------------------
 
 Here we're giving this cluster the "central" site identifier. This will be used
-for multi-cluster policy-based TOSCA service composition.
+for multi-cluster policy-based TOSCA service composition:
 
     turandot operator install --site=central --wait -v
 
-Note the operators' container images are downloaded from Docker Hub. Here are
-direct links for [Turandot](https://hub.docker.com/r/tliron/turandot-operator),
-[Reposure operator](https://hub.docker.com/r/tliron/reposure-operator), and
-[Reposure surrogate](https://hub.docker.com/r/tliron/reposure-surrogate).
+Note the operator's container image is downloaded from Docker Hub. Here is a
+[direct link](https://hub.docker.com/r/tliron/turandot-operator).
 
-The `--wait` flag tells the command to block until the operators are running
+The `--wait` flag tells the command to block until the operator is running
 successfully. The `-v` flag adds more verbosity so you can see what the command is
 doing. (You can use `-vv` for even more verbosity.)
+
 
 Building the "Hello World" CSAR
 -------------------------------
@@ -77,6 +78,7 @@ the TOSCA topology template, profiles, and artifacts into a CSAR:
     examples/hello-world/scripts/build-csar
 
 The CSAR file should now sit in the "dist" directory.
+
 
 Deploying "Hello World"
 -----------------------
@@ -95,16 +97,19 @@ To list all deployed services:
 
 Note that the "Hello World" example includes a LoadBalancer Kubernetes service that would
 allow you to access its web page from outside the cluster. If your cluster is not configured
-with LoadBalancer support then the service will never get an IP address, and the TOSCA "url"
-output for your "Hello World" service will show `http://<unknown>:80`, even when successfully
-deployed.
+with LoadBalancer support then, even when successfully
+deployed, the service will never get an IP address, and the TOSCA "url"
+output for your "Hello World" service will show `http://<unknown>:80`.
 
 If you're using Minikube, it comes with a
 [primitive ingress solution](https://minikube.sigs.k8s.io/docs/commands/tunnel/) based on ssh
-tunneling that can be useful for testing. To run it (blocking):
+tunneling that can be useful for testing. To run it (it's blocking, so you might want to do
+it in a separate terminal session):
 
     minikube tunnel
 
-Once the tunnel is up, the LoadBalancer should get its IP address, and soon Turandot will
-update the "url" output with the correct URL, which you should be able to access with a
-web browser.
+Once the tunnel is up, the LoadBalancer should get its IP address, and Turandot would soon
+update the "url" output with the correct URL. You can then use curl or a web browser to access
+it:
+
+    xdg-open $(turandot service output hello-world url)
