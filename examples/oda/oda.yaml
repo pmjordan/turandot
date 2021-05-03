@@ -14,6 +14,8 @@ imports:
 
 node_types:
 
+  oda-component:
+
   # The Kubernetes profile comprises capability types, not node types
   # You need to create your own node type that is an assemblage of capabilities
   # In other words, the node is where we logically relate Kubernetes resources together
