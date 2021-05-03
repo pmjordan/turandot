@@ -4,10 +4,10 @@ echo "this has been written by turandot script pj_install.sh " + $(date) >> ~/pj
 
 cd /tmp
 #Install turandot binary
-wget -O turandot.rpm https://github.com/tliron/turandot/releases/download/v0.4.0/turandot_0.4.0_linux_amd64.rpm
+wget -O turandot.rpm https://github.com/tliron/turandot/releases/download/v0.5.0/turandot_0.5.0_linux_amd64.rpm
 sudo rpm -ivh turandot.rpm
 
-wget -O reposure.rpm https://github.com/tliron/reposure/releases/download/v0.1.3/reposure_0.1.3_linux_amd64.rpm
+wget -O reposure.rpm https://github.com/tliron/reposure/releases/download/v0.1.4/reposure_0.1.4_linux_amd64.rpm
 sudo rpm -ivh reposure.rpm
 
 #Install puccini binary
