@@ -1,6 +1,16 @@
 {
     "cSpell.words": [
+        "CSAR",
+        "Minikube",
+        "concat",
         "kutil",
+        "loadbalancer",
+        "loadbalancing",
+        "mariadb",
+        "paulbouwer",
+        "rootpwd",
+        "scriptlet",
+        "scriptlets",
         "tliron"
     ]
 }

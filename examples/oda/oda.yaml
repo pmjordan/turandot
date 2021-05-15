@@ -11,11 +11,21 @@ imports:
   file: profiles/kubernetes/1.0/profile.yaml
 - namespace_prefix: o11n
   file: profiles/orchestration/1.0/profile.yaml
+- namespace_prefix: mariadb
+  file: profiles/mariadb/profile.yaml
 
 node_types:
 
-  oda-component:
-
+  odac:
+    description: "a type of node to represent TMForum ODA controller"
+    capabilities:
+      # The Metadata capability will be shared with all resources
+      # Only one should be used per node type
+      metadata: k8s:Metadata
+      # Other capabilities can be added to represent Kubernetes resources
+      # (The same capability type can be used multiple times, e.g. two LoadBalancers)
+      deployment: k8s:Deployment
+      
   # The Kubernetes profile comprises capability types, not node types
   # You need to create your own node type that is an assemblage of capabilities
   # In other words, the node is where we logically relate Kubernetes resources together
@@ -71,7 +81,7 @@ topology_template:
             ports:
             - { name: http, protocol: TCP, port: 80, targetPort: 8080 }
           attributes:
-            # We're initializing this attribute to make sure the call to get_attribute in the ouput
+            # We're initializing this attribute to make sure the call to get_attribute in the output
             # won't fail before a real value arrives
             ingress:
             - ip: <unknown>
@@ -101,6 +111,27 @@ topology_template:
           type: o11n:Executable
           file: artifacts/scripts/configure.sh
           deploy_path: /tmp/configure.sh
+
+    odac:
+      type: odac
+      description: "see https://github.com/tmforum-rand/oda-component-definitions"
+      capabilities:
+        metadata:
+          properties:
+            # If "name" is not specified, the TOSCA node template name will be used
+            # If "namespace" is not set, resources will be created in the same namespace as
+            # the Turandot operator 
+            namespace: { get_input: namespace }
+            labels:
+              app.kubernetes.io/name: odac
+        deployment:
+          properties:
+            metadataNamePostfix: ''
+            template:
+              containers:
+              - name: oda
+                image: tmforumodacanvas/component-controller
+                imagePullPolicy: Always
 
   outputs:
 
