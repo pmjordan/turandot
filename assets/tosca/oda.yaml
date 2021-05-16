@@ -1,0 +1,169 @@
+tosca_definitions_version: tosca_simple_yaml_1_3
+
+metadata:
+
+  # This scriptlet is used by the "configure" interface
+  puccini.scriptlet.import:oda.set-output: artifacts/scriptlets/set-output.js
+
+imports:
+
+- namespace_prefix: k8s
+  file: profiles/kubernetes/1.0/profile.yaml
+- namespace_prefix: o11n
+  file: profiles/orchestration/1.0/profile.yaml
+# - namespace_prefix: oda
+#   file: profiles/tmforum/1.0/profile.yaml
+- namespace_prefix: mariadb
+  file: profiles/mariadb/profile.yaml
+
+
+node_types:
+
+
+
+  # odac:
+  #   description: "a type of node to represent TMForum ODA controller"
+  #   capabilities:
+  #     # The Metadata capability will be shared with all resources
+  #     # Only one should be used per node type
+  #     metadata: k8s:Metadata
+  #     # Other capabilities can be added to represent Kubernetes resources
+  #     # (The same capability type can be used multiple times, e.g. two LoadBalancers)
+  #     deployment: k8s:Deployment
+
+  # The Kubernetes profile comprises capability types, not node types
+  # You need to create your own node type that is an assemblage of capabilities
+  # In other words, the node is where we logically relate Kubernetes resources together
+  Application:
+    capabilities:
+      # The Metadata capability will be shared with all resources
+      # Only one should be used per node type
+      metadata: k8s:Metadata
+      # Other capabilities can be added to represent Kubernetes resources
+      # (The same capability type can be used multiple times, e.g. two LoadBalancers)
+      deployment: k8s:Deployment
+      web: k8s:LoadBalancer
+    interfaces:
+      # Interfaces are used to achieve service modes
+      # The name of the interface is used by default as the name of the mode
+      # (Anything after "." in the name is ignored for this purpose)
+      normal.1:
+        type: k8s:ContainerCommand
+      normal.2:
+        type: o11n:Scriptlet
+
+topology_template:
+
+  inputs:
+
+    namespace:
+      type: string
+      default: workspace
+
+  node_templates:
+
+    db:
+      type: mariadb:DB
+      capabilities:
+        metadata:
+          properties:
+            name: asterisk-vnf
+            namespace: { get_input: namespace }
+            labels:
+              app.kubernetes.io/name: asterisk-vnf-mariadb
+        db:
+          properties:
+            database: asterisk
+            username: asterisk
+            password: asterisk
+            rootpwd: asterisk
+
+    oda:
+      type: Application
+      capabilities:
+        metadata:
+          properties:
+            # If "name" is not specified, the TOSCA node template name will be used
+            # If "namespace" is not set, resources will be created in the same namespace as
+            # the Turandot operator 
+            namespace: { get_input: namespace }
+            labels:
+              app.kubernetes.io/name: oda
+        deployment:
+          properties:
+            metadataNamePostfix: ''
+            template:
+              containers:
+              - name: oda
+                image: docker.io/paulbouwer/hello-kubernetes:1.8
+                imagePullPolicy: Always
+        web:
+          properties:
+            ports:
+            - { name: http, protocol: TCP, port: 80, targetPort: 8080 }
+          attributes:
+            # We're initializing this attribute to make sure the call to get_attribute in the output
+            # won't fail before a real value arrives
+            ingress:
+            - ip: <unknown>
+      interfaces:
+        # The interfaces are executed in alphabetical order
+        # The previous execution must succeed before moving on to the next
+        normal.1:
+          inputs:
+            # The command is executed with the contents of the Clout in stdin
+            # If the command has a non-empty stdout, it will be used to replace the current Clout
+            # This combination allows the command to manipulate the Clout if desired
+            command:
+            - /tmp/configure.sh
+            - $$nodeTemplate # arguments beginning with "$$" will be replaced with local values
+            # Artifacts are copied to the target container before execution
+            artifacts:
+            - configure # See below
+        normal.2:
+          inputs:
+            scriptlet: oda.set-output
+            arguments:
+              name: initialized
+              value: 'true'
+      artifacts:
+        configure:
+          # The Executable type will set executable permissions on the file
+          type: o11n:Executable
+          file: artifacts/scripts/configure.sh
+          deploy_path: /tmp/configure.sh
+
+    # odac:
+    #   type: odac
+    #   description: "see https://github.com/tmforum-rand/oda-component-definitions"
+    #   capabilities:
+    #     metadata:
+    #       properties:
+    #         # If "name" is not specified, the TOSCA node template name will be used
+    #         # If "namespace" is not set, resources will be created in the same namespace as
+    #         # the Turandot operator 
+    #         namespace: { get_input: namespace }
+    #         labels:
+    #           app.kubernetes.io/name: odac
+    #     deployment:
+    #       properties:
+    #         metadataNamePostfix: ''
+    #         template:
+    #           containers:
+    #           - name: oda
+    #             image: tmforumodacanvas/component-controller
+    #             imagePullPolicy: Always
+
+    # sigscale-ocs.component:
+    #   type: oda:component
+
+  outputs:
+
+    url:
+      # Before a real attribute value arrives this will evaluate to "http://<unknown>:80"
+      type: string
+      value: { concat: [ http://, { get_attribute: [ oda, web, ingress, 0, ip ] }, ':80' ] }
+
+    initialized:
+      type: boolean
+      value: false
