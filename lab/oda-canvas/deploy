@@ -1,0 +1,40 @@
+#!/bin/bash
+# set -e
+
+# HERE=$(dirname "$(readlink --canonicalize "$BASH_SOURCE")")
+# . "$HERE/../../scripts/_env"
+# . "$ROOT/scripts/_trap"
+
+# # https://github.com/tmforum-rand/oda-component-definitions
+
+# if [ "$1" == -c ]; then
+# 	"$HERE/delete"
+# fi
+
+# . "$HERE/../_env"
+
+pushd .
+BASE=$(find / -path */oda-canvas-charts 2>/dev/null )
+cd $BASE
+kubectl config set-context --current --namespace=canvas
+./installCanvas.sh
+cd controllers
+python3 -m pip install -r requirements.txt 
+#create serviceaccount - could do this by editting oda-compoennets/controllers/rbac.yaml
+kubectl apply -f - <<EOF
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: odacomponent-account
+EOF
+#run in the same workspace as turandot, ie workspace
+kubectl apply -f controllers/component-wso2Controller.yaml 
+#kubectl run odacomponentcontroller --image lesterthomas/odacomponentcontroller:0.25 
+#kubectl run odacomponentcontroller --image lesterthomas/odacomponentcontroller:0.25 -t -i  --command /bin/bash
+popd
+
+#Session ended, resume using 'kubectl attach odacomponentcontroller -c odacomponentcontroller -i -t' command when the pod is running
+
+kubectl config set-context --current --namespace=workspace
+
+
