@@ -1,0 +1,36 @@
+tosca_definitions_version: tosca_simple_yaml_1_3
+
+imports:
+
+- capabilities.yaml
+- namespace_prefix: k8s
+  file: ../kubernetes/1.0/profile.yaml
+
+node_types:
+
+  component:
+    capabilities:
+      metadata: k8s:Metadata
+      oda-component: ODA-Component
+
+
+
+
+#   Operator:
+#     capabilities:
+#       metadata: k8s:Metadata
+#       deployment: k8s:Deployment
+#       crd: k8s:CustomResourceDefinition
+# 
+#   OperatorStorage:
+#     capabilities:
+#       metadata: k8s:Metadata
+#       pv: k8s:PersistentVolume
+#       pvc: k8s:PersistentVolumeClaim
+# 
+#   OperatorServiceAccount:
+#     capabilities:
+#       metadata: k8s:Metadata
+#       service-account: k8s:ServiceAccount
+#       role: k8s:Role
+#       role-binding: k8s:RoleBinding

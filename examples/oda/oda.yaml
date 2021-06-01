@@ -13,6 +13,10 @@ imports:
   file: profiles/orchestration/1.0/profile.yaml
 - namespace_prefix: mariadb
   file: profiles/mariadb/profile.yaml
+- namespace_prefix: tmforum
+  file: profiles/tmforum/profile.yaml
+
+
 
 node_types:
 
@@ -25,6 +29,7 @@ node_types:
       # Other capabilities can be added to represent Kubernetes resources
       # (The same capability type can be used multiple times, e.g. two LoadBalancers)
       deployment: k8s:Deployment
+
       
   # The Kubernetes profile comprises capability types, not node types
   # You need to create your own node type that is an assemblage of capabilities
@@ -132,6 +137,94 @@ topology_template:
               - name: oda
                 image: tmforumodacanvas/component-controller
                 imagePullPolicy: Always
+
+    sigscale-ocs:
+      type: tmforum:component
+      description: "SigScale Online Charging System (OCS)"
+      # see https://github.com/tmforum-rand/oda-component-definitions/blob/master/components/sigscale-ocs.component.yaml
+      capabilities:
+        metadata:
+          properties:
+            # If "name" is not specified, the TOSCA node template name will be used
+            # If "namespace" is not set, resources will be created in the same namespace as
+            # the Turandot operator 
+            namespace: { get_input: namespace }
+            labels:
+              app.kubernetes.io/name: sigscale-ocs
+        oda-component:
+          properties:
+            conversion:
+              strategy: None
+            group: components.oda.tmforum.org
+            names:
+              categories:
+                - all
+              kind: Component
+              plural: components
+              singular: component
+            scope: Cluster
+            versions:
+              - name: v1alpha1
+                additionalPrinterColumns:
+                  - name: exposed_APIs
+                    type: string
+                    description: list the endpoints for exposed APIs
+                    jsonPath: .status.exposedAPIsummary
+                  - name: developer_UI
+                    type: string
+                    description: list the Developer User Interface(s)
+                    jsonPath: .status.developerUIsummary
+                  - name: deployment_status
+                    type: string
+                    description: Deployment status [in progress, complete, failed]
+                    jsonPath: .status.deployment_status
+      #   description: >-
+      #     additionalPrinterColumns specifies additional columns returned in Table output. If no
+      #     columns are specified, a single column displaying the age of the custom resource is used.
+      #   type: list
+      #   entry_schema: CustomResourceColumnDefinition
+      #   required: false
+      # name:
+      #   description: >-
+      #     name is the version name, e.g. "v1", "v2beta1", etc. The custom resources are served under
+      #     this version at `/apis/<group>/<version>/...` if `served` is true.
+      #   type: string
+      #   required: false
+      # schema:
+      #   description: >-
+      #     schema describes the schema used for validation, pruning, and defaulting of this version
+      #     of the custom resource.
+      #   type: CustomResourceValidation 
+      #   required: false
+      # served:
+      #   description: >-
+      #     served is a flag enabling/disabling this version from being served via REST APIs.
+      #   type: boolean
+      #   required: false
+      # storage:
+      #   description: >-
+      #     storage indicates this version should be used when persisting custom resources to storage.
+      #     There must be exactly one version with storage=true.
+      #   type: boolean
+      #   required: false
+      # subresources:
+      #   description: >-
+      #     subresources specify what subresources this version of the defined custom resource have.
+      #   type: CustomResourceSubresources
+      #   required: false
+
+            type: " a string"
+        # Service:
+        #   properties:
+        #     type: LoadBalancer
+        #     selector:
+        #       app: sigscale-ocs
+        #     ports:
+        #       - port: 8080
+        #         targetPort: http
+
+
+
 
   outputs:
 
