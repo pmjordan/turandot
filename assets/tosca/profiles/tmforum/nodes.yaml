@@ -14,8 +14,6 @@ node_types:
       oda-component: ODA-Component
 
 
-
-
 #   Operator:
 #     capabilities:
 #       metadata: k8s:Metadata

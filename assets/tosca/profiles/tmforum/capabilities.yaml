@@ -12,12 +12,13 @@ capability_types:
       specification.guide.url: 'https://www.tmforum.org/resources/exploratory-report/ig1171-oda-component-definition-r19-0-0/'
       turandot.apiVersion: v1
       turandot.copy: metadata.labels->spec.selector
-    derived_from: k8s:Resource
+    derived_from: k8s:CustomResourceDefinition
     description: >-
       A component as defined by TMForum in ODA
     properties:
       type:
-        type: string 
+        type: string
+      
   # Connectable:
   #   derived_from: k8s:Resource
 

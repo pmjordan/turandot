@@ -178,50 +178,131 @@ topology_template:
                     type: string
                     description: Deployment status [in progress, complete, failed]
                     jsonPath: .status.deployment_status
-      #   description: >-
-      #     additionalPrinterColumns specifies additional columns returned in Table output. If no
-      #     columns are specified, a single column displaying the age of the custom resource is used.
-      #   type: list
-      #   entry_schema: CustomResourceColumnDefinition
-      #   required: false
-      # name:
-      #   description: >-
-      #     name is the version name, e.g. "v1", "v2beta1", etc. The custom resources are served under
-      #     this version at `/apis/<group>/<version>/...` if `served` is true.
-      #   type: string
-      #   required: false
-      # schema:
-      #   description: >-
-      #     schema describes the schema used for validation, pruning, and defaulting of this version
-      #     of the custom resource.
-      #   type: CustomResourceValidation 
-      #   required: false
-      # served:
-      #   description: >-
-      #     served is a flag enabling/disabling this version from being served via REST APIs.
-      #   type: boolean
-      #   required: false
-      # storage:
-      #   description: >-
-      #     storage indicates this version should be used when persisting custom resources to storage.
-      #     There must be exactly one version with storage=true.
-      #   type: boolean
-      #   required: false
-      # subresources:
-      #   description: >-
-      #     subresources specify what subresources this version of the defined custom resource have.
-      #   type: CustomResourceSubresources
-      #   required: false
+                # TODO schema is commented out as puccini does not yet implement schema properties
+                # schema:
+                #   openAPIV3Schema:
+                #     type: object
+                #     properties:
+                #       spec:
+                #         type: object
+                #         properties:     
+                #           coreFunction:
+                #             type: object  
+                #             properties:  
+                #               exposedAPIs:   
+                #                 type: array
+                #                 items:
+                #                   type: object
+                #                   properties:
+                #                     name:
+                #                       type: string
+                #                     specification:
+                #                       type: string
+                #                     implementation:
+                #                       type: string
+                #                     path:
+                #                       type: string
+                #                     developerUI:
+                #                       type: string
+                #                     port:
+                #                       type: integer
+                #               dependantAPIs:   
+                #                 type: array
+                #                 items:
+                #                   type: object
+                #                   properties:
+                #                     name:
+                #                       type: string
+                #                     specification:
+                #                       type: string
+                #                     path:
+                #                       type: string
+                #           eventNotification:
+                #             type: object  
+                #             properties:  
+                #               publishedEvents: 
+                #                 type: array
+                #                 items:
+                #                   type: object
+                #                   properties:
+                #                     name:
+                #                       type: string
+                #                     href:
+                #                       type: string
+                #               subscribedEvents: 
+                #                 type: array
+                #                 items:
+                #                   type: object
+                #                   properties:
+                #                     name:
+                #                       type: string
+                #                     href:
+                #                       type: string
+                #           management:
+                #             type: array
+                #             items:
+                #               type: object
+                #               properties:
+                #                 name:
+                #                   type: string
+                #                 href:
+                #                   type: string
+                #                 specification:
+                #                   type: string
+                #           security:
+                #             type: object  
+                #             properties:
+                #               securitySchemes: 
+                #                 type: object
+                #                 x-kubernetes-preserve-unknown-fields: true                        
+                #           version:
+                #             type: string
+                #           description:
+                #             type: string
+                #           type:
+                #             type: string
+                #           selector:
+                #             type: object
+                #             x-kubernetes-preserve-unknown-fields: true    
+                #           componentKinds:
+                #             type: array
+                #             items:
+                #               type: object
+                #               x-kubernetes-preserve-unknown-fields: true    
+                #           maintainers:
+                #             type: array
+                #             items:
+                #               type: object
+                #               x-kubernetes-preserve-unknown-fields: true    
+                #           owners:
+                #             type: array
+                #             items:
+                #               type: object
+                #               x-kubernetes-preserve-unknown-fields: true    
+                #       status:
+                #         type: object
+                #         x-kubernetes-preserve-unknown-fields: true 
+              - name: v1alpha2
+              # This version is not used by sigscale but is defined in the component CRD
+                # Each version can be enabled/disabled by Served flag.
+                served: true
+                # One and only one version must be marked as the storage version.
+                storage: true
+                # schema
+                additionalPrinterColumns:
+                - name: exposed_APIs
+                  type: string
+                  description: list the endpoints for exposed APIs
+                  jsonPath: .status.exposedAPIsummary
+                - name: developer_UI
+                  type: string
+                  description: list the Developer User Interface(s)
+                  jsonPath: .status.developerUIsummary
+                - name: deployment_status
+
 
             type: " a string"
-        # Service:
-        #   properties:
-        #     type: LoadBalancer
-        #     selector:
-        #       app: sigscale-ocs
-        #     ports:
-        #       - port: 8080
-        #         targetPort: http
+
 
 
 
