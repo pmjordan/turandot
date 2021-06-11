@@ -1,0 +1,42 @@
+tosca_definitions_version: tosca_simple_yaml_1_3
+
+data_types:
+
+  ComponentKind:
+    properties:
+      group:
+        type: string
+      kind:
+        type: string
+
+  Party:
+    properties:
+      name:
+        type: string
+      email:
+        type: string
+
+  CoreFunction:
+    properties:
+      exposedAPIs:
+        type: list
+        entry_schema: APIDef
+      dependantAPIs: 
+        type: list
+        entry_schema: APIDef
+
+  APIDef:
+    properties:
+      name:
+        type: string
+      specification:
+        type: string
+      implementation:
+        type: string
+      path:
+        type: string
+      developerUI:
+        type: string
+        required: false
+      port:
+        type: integer

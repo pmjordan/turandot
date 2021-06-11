@@ -1,6 +1,7 @@
 tosca_definitions_version: tosca_simple_yaml_1_3
 
 imports:
+- data.yaml
 
 - namespace_prefix: k8s
   file: ../kubernetes/1.0/profile.yaml
@@ -8,18 +9,39 @@ imports:
 capability_types:
   ODA-Component:
     metadata:
-      specification.url: 'https://github.com/tmforum-rand/oda-component-definitions/blob/master/custom-resource-definitions/oda-component-crd.yaml' 
-      specification.guide.url: 'https://www.tmforum.org/resources/exploratory-report/ig1171-oda-component-definition-r19-0-0/'
-      turandot.apiVersion: v1
-      turandot.copy: metadata.labels->spec.selector
-    derived_from: k8s:CustomResourceDefinition
+      turandot.apiVersion: oda.tmforum.org/v1alpha1
+      turandot.kind: component
+      # specification.url: 'https://github.com/tmforum-rand/oda-component-definitions/blob/master/custom-resource-definitions/oda-component-crd.yaml' 
+      # specification.guide.url: 'https://www.tmforum.org/resources/exploratory-report/ig1171-oda-component-definition-r19-0-0/'
+      # turandot.apiVersion: v1
+      # turandot.copy: metadata.labels->spec.selector
+    derived_from: k8s:Resource
     description: >-
       A component as defined by TMForum in ODA
     properties:
+      version:
+        type: string
+      description:
+        type: string
+        required: false
       type:
         type: string
+      selector:
+        type: k8s:LabelSelector
+      componentKinds:
+        type: list
+        entry_schema: ComponentKind
+      maintainers:
+        type: list
+        entry_schema: Party
+      owners:
+        type: list
+        entry_schema: Party
+      coreFunction:
+        type: CoreFunction
       
-  # Connectable:
-  #   derived_from: k8s:Resource
+
+        
+      
 
 
