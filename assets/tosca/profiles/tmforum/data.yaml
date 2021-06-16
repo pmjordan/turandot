@@ -33,10 +33,54 @@ data_types:
         type: string
       implementation:
         type: string
+        required: false
       path:
         type: string
+        required: false
       developerUI:
         type: string
         required: false
       port:
         type: integer
+        required: false
+
+  EventNotification:
+    properties:
+      publishedEvents:
+        type: list
+        entry_schema: EventDef
+      subscribedEvents:
+        type: list
+        entry_schema: EventDef
+
+  EventDef:
+    properties:
+      name:
+        type: string
+      href:
+        type: string
+
+  Management:
+    properties:
+      name:
+        type: string
+      href:
+        type: string
+      specification:
+        type: string
+
+  Security:
+    properties:
+      securitySchemes:
+        type: map
+        entry_schema: SecurityScheme
+
+  SecurityScheme:
+    properties:
+      type:
+        type: string
+      scheme: 
+        type: string
+      bearerFormat:
+        type: string
+
