@@ -24,11 +24,7 @@ node_types:
     derived_from: tmforum:component
     description: "SigScale Online Charging System (OCS)"
     # see https://github.com/tmforum-rand/oda-component-definitions/blob/master/components/sigscale-ocs.component.yaml
-    capabilities:
-      deployment: k8s:Deployment
-      service: k8s:Service
-      ## TODO Turandot doe not define a capability type to represent a persistentVolumeClaim (it does have a datatype for it)
-      #persistentVolumeClaim: k8s:PersistentVolumeClaim
+
 
 
   odac:
@@ -305,7 +301,7 @@ topology_template:
           # assign values where they are common to all ODA components.
           properties:
             version: "1.0.0"
-            description: "SigScale Online Charging System (OCS)"
+            # description: "SigScale Online Charging System (OCS)"
             type: "ocs"
             selector:
               matchLabels:
@@ -369,97 +365,6 @@ topology_template:
                 path: /balanceManagement/v1/
                 port: 8080
               dependantAPIs: []
-            eventNotification:
-              publishedEvents: []
-              subscribedEvents: []
-            management: []
-            security:
-              securitySchemes:
-                bearerAuth:
-                  type: http
-                  scheme: bearer
-                  bearerFormat: JWT 
-        deployment:
-          properties:
-            replicas: 1
-            selector:
-              matchLabels:
-                app.kubernetes.io/name: ocs
-            template:
-              # metadata:
-              ## K8s allows labels in template.metadata section but Turandot only allows it to contain specification.url 
-              #   labels:
-              #     app.kubernetes.io/name: ocs
-              #     app.kubernetes.io/component: 3gpp-ocf
-              # # TODO k8s allows multiple values for the same label but turandot rejects this as invalid YAML
-              # #    app.kubernetes.io/component: rest
-              #     app: sigscale-ocs
-
-              ## TODO Turandot has not yet implemented securityContext and expects it as a string
-              # securityContext:
-              #   fsGroup: 1000
-
-              initContainers:
-              - name: ocs-install
-                image: sigscale/ocs
-                command:
-                - sh
-                - bin/initialize
-                stdin: true
-                tty: true
-                ## TODO ks8: defines volumeMounts as a list but turandot has not yet implement this and only allows a string
-                # volumeMounts:
-                # - mountPath: /home/otp/db
-                #   name: db
-
-              containers:
-              - name: ocs
-                image: sigscale/ocs
-                ports:
-                - name: diameter
-                  protocol: TCP
-                  containerPort: 3868
-                - name: radius
-                  protocol: UDP
-                  containerPort: 1812
-                - name: radius-acct
-                  protocol: UDP
-                  containerPort: 1813
-                - name: http
-                  protocol: TCP
-                  containerPort: 8080
-                #volumeMounts:
-                ## TODO ks8: defines volumeMounts as a list but turandot has not yet implement this and only allows a string
-                #- mountPath: /home/otp/db
-                #  name: db
-        service:
-          ## TODO k8s has metadata before the spec but Turandot does not allow that
-          # metadata:
-          #   name: sigscale-ocs-service
-          #   labels:
-          #     app: sigscale-ocs
-          #     oda.tmforum.org/componentName: sigscale-ocs
-          properties:
-            ports:
-              - port: 8080
-                ## TODO k8s has targetPort as a string but Turandot defines it as an integer
-                #targetPort: http
-                name: sigscale-ocs-service
-            type: LoadBalancer
-            selector:
-              app: sigscale-ocs
-        ## TODO Turandot doe not define a capability type to represent a persistentVolumeClaim
-        # persistentVolumeClaim:
-        #   ## TODO k8s has metadata before the spec but Turandot does not allow that
-        #   # metadata:
-        #   #  name: ocs-data
-        #   properties:
-        #     resources:
-        #       requests:
-        #         storage: 20Gi
-        #     accessModes:
-        #     - ReadWriteOnce
-
   outputs:
 
     url:
