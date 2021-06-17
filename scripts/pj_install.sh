@@ -1,9 +1,21 @@
 #!/bin/sh
+# install helm
+cd /tmp
+curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3
+chmod 700 get_helm.sh
+./get_helm.sh
+
+# install canvas
+cd /opt
+sudo git clone https://github.com/tmforum-oda/oda-canvas-charts
+sudo /opt/oda-canvas-charts/install_canvas.sh
+
 # install turandot on Centos. Assumes required published packages already installed by cloud-init
 echo "this has been written by turandot script pj_install.sh " + $(date) >> ~/pj_turandot_install_logs.txt
 
-cd /tmp
+
 #Install turandot binary
+cd /tmp
 wget -O turandot.rpm https://github.com/tliron/turandot/releases/download/v0.5.0/turandot_0.5.0_linux_amd64.rpm
 sudo rpm -ivh turandot.rpm
 
@@ -21,8 +33,6 @@ sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
 
 curl -LO https://storage.googleapis.com/minikube/releases/latest/minikube-latest.x86_64.rpm
 sudo rpm -ivh minikube-latest.x86_64.rpm
-
-#TODO make the above a loop over an array of JSON objects each representing the required binary
 
 sudo wall -n "Completed turandot tools installation. Start a new session to use new permissions and cd to /opt/turandot"
 

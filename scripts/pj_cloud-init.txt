@@ -7,22 +7,11 @@ packages:
   - jq
   - pigz
   - podman
-  - helm
-write_files:
-  - owner: azureuser:azureuser
-    path: /home/azureuser/startup.sh
-    content: |
-      #!/bin/sh
-      echo "this has been written via cloud-init" + $(date) >> ~/logs.txt
-    permissions: '0744'
 groups:
   - turandot: [azureuser]
 runcmd:
-  - git clone https://github.com/tmforum-oda/oda-canvas-charts
-  - /opt/oda-canvas-charts/install_canvas.sh
   - sudo chown azureuser:azureuser /home/azureuser
   - sudo chown azureuser:azureuser /home/azureuser/startup.sh
-  - /home/azureuser/startup.sh
   - cd /opt
   - git clone --branch mymaster --single-branch https://github.com/pmjordan/turandot.git
   - chown -R root:turandot /opt/turandot
