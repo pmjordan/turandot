@@ -1,7 +1,8 @@
-Hello World Example
+ODA Example
 ===================
 
-A stateless single-pod web workload comprising a deployment and a loadbalancer service.
+An adaption of the Hello World example with various in-process nodes working 
+towards an implementation of a component as defined by TMForum
 
 
 Building the CSAR

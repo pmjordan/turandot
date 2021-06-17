@@ -7,6 +7,7 @@ packages:
   - jq
   - pigz
   - podman
+  - helm
 write_files:
   - owner: azureuser:azureuser
     path: /home/azureuser/startup.sh
@@ -17,6 +18,8 @@ write_files:
 groups:
   - turandot: [azureuser]
 runcmd:
+  - git clone https://github.com/tmforum-oda/oda-canvas-charts
+  - /opt/oda-canvas-charts/install_canvas.sh
   - sudo chown azureuser:azureuser /home/azureuser
   - sudo chown azureuser:azureuser /home/azureuser/startup.sh
   - /home/azureuser/startup.sh
@@ -27,5 +30,6 @@ runcmd:
   - /opt/turandot/scripts/pj_install.sh
   - mkdir -p -m 775 /Depot/Temporary
   - chown -R :turandot /Depot/Temporary
-  - usermod -a -G turandot azureuser 
+  - usermod -a -G turandot azureuser
+
 final_message: "The system is finally up, after $UPTIME seconds."
