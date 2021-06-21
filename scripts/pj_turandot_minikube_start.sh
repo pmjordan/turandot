@@ -1,12 +1,11 @@
-# ingress addon is required by canvas operator, quicker to start it here
-minikube start --addons registry ingress --insecure-registry "192.168.0.0/16"
-#minikube start --addons=registry ...
+# ingress addon is required by canvas operator, insecure-registry is required by cert-manager quicker to start them here
+minikube start --addons registry ingress --insecure-registry "10.0.0.0/8","192.168.0.0/16"
 #install canvas
 cd /opt/oda-canvas-charts
 kubectl create namespace canvas
 ./install_canvas.sh
-cd ~
 #install turandot
+cd /opt/turandot/
 kubectl config set-context --current --namespace=workspace
 turandot operator install --role=view --site=central --wait -vv
 reposure operator install --role=view --wait -v
@@ -16,6 +15,7 @@ reposure simple install --authentication --wait -v
 reposure registry create default --provider=simple --wait -v
 minikube status
 reposure registry list
+cd ~
 
 
 
