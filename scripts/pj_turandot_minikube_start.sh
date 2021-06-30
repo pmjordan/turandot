@@ -3,6 +3,7 @@ minikube start --addons registry ingress --insecure-registry "10.0.0.0/8","192.1
 #install canvas
 cd /opt/oda-canvas-charts
 kubectl create namespace canvas
+kubectl config set-context --current --namespace=canvas
 ./install_canvas.sh
 #install turandot
 cd /opt/turandot/
