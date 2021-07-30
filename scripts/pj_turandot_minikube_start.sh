@@ -1,4 +1,5 @@
 # ingress addon is required by canvas operator, insecure-registry is required by cert-manager quicker to start them here
+minikube delete
 minikube start --addons registry ingress --insecure-registry "10.0.0.0/8","192.168.0.0/16"
 #install canvas
 cd /opt/oda-canvas-charts
