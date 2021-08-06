@@ -8,7 +8,7 @@ chmod 700 get_helm.sh
 
 # install canvas
 cd /opt
-sudo git clone https://github.com/tmforum-oda/oda-canvas-charts
+sudo git clone https://github.com/pmjordan/oda-canvas-charts
 
 # install turandot on Centos. Assumes required published packages already installed by cloud-init
 echo "this has been written by turandot script pj_install.sh " + $(date) >> ~/pj_turandot_install_logs.txt
