@@ -10,8 +10,7 @@ chmod 700 get_helm.sh
 cd /opt
 sudo git clone https://github.com/pmjordan/oda-canvas-charts
 
-# install turandot on Centos. Assumes required published packages already installed by cloud-init
-echo "this has been written by turandot script pj_install.sh " + $(date) >> ~/pj_turandot_install_logs.txt
+# install turandot on ubuntu. Assumes required published packages already installed by cloud-ini
 
 
 #Install turandot binary
@@ -27,12 +26,7 @@ wget -O puccini.deb https://github.com/tliron/puccini/releases/download/v0.18.0/
 sudo apt install ./puccini.deb
 
 #Install kubectl and minikube here as can't get them from cloud-init packages
-curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
-sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
-sudo chmod 755 /usr/local/bin/minikube
-
-wget https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64
-sudo cp minikube-linux-amd64 /usr/local/bin/minikube
+/opt/turandot/lab/install
 
 sudo wall -n "Completed turandot tools installation. Start a new session to use new permissions and cd to /opt/turandot"
 

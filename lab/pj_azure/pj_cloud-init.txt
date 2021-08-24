@@ -16,7 +16,7 @@ runcmd:
   - git clone --branch ubuntu --single-branch https://github.com/pmjordan/turandot.git
   - chown -R root:turandot /opt/turandot
   - chmod -R g+w /opt/turandot
-  - /opt/turandot/labs/pj_install_deb.sh
+  - /opt/turandot/lab/pj_install_deb.sh
   - mkdir -p -m 775 /Depot/Temporary
   - chown -R :turandot /Depot/Temporary
   - usermod -a -G turandot azureuser

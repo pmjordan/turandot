@@ -8,7 +8,7 @@ IMAGE=Canonical:0001-com-ubuntu-server-hirsute:21_04:21.04.202107200
 
 function create {
     az group create --name $RESOURCEGROUP --location $LOCATION
-    az vm create --resource-group $RESOURCEGROUP --name $VMNAME --image $IMAGE --size Standard_B2ms --admin-username azureuser --generate-ssh-keys --custom-data scripts/pj_cloud-init.txt
+    az vm create --resource-group $RESOURCEGROUP --name $VMNAME --image $IMAGE --size Standard_B2ms --admin-username azureuser --generate-ssh-keys --custom-data lab/pj_azure/pj_cloud-init.txt
 }
 
 
