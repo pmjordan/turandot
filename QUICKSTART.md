@@ -21,7 +21,6 @@ The requirements can be installed manually as detailed in the sections below but
 
 
 ### Tools
-An Azure VM with the tools listed below using the command script/pj_azure_vm.sh
 
 Download the binary release of [Turandot](https://github.com/tliron/turandot/releases).
 Specifically you'll need the `turandot` CLI utility (it's a self-contained executable).
