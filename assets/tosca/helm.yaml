@@ -1,0 +1,36 @@
+tosca_definitions_version: tosca_simple_yaml_1_3
+
+metadata:
+
+  template_name: Helm Example
+  template_author: Turandot
+
+imports:
+
+- namespace_prefix: helm
+  file: profiles/helm/1.0/profile.yaml
+
+topology_template:
+
+  inputs:
+
+    namespace:
+      type: string
+      default: workspace
+
+  node_templates:
+
+    hello-world:
+      type: helm:Release
+      properties:
+        # If the "name" property is not specified the node template name will be used
+        chart: { get_artifact: [ SELF, chart ] }
+        namespace: { get_input: namespace }
+        values:
+          nameOverride: helm # is used as both a postfix and a label
+          service.type: LoadBalancer
+          service.port: '8080'
+      artifacts:
+        chart:
+          type: helm:Chart
+          file: artifacts/charts/hello-world.tar.gz
