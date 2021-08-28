@@ -6,10 +6,11 @@ packages:
   - git
   - jq
   - pigz
-  - podman
+  - docker.io
   - zip
 groups:
   - turandot: [azureuser]
+  - docker: [azureuser]
 runcmd:
   - sudo chown azureuser:azureuser /home/azureuser
   - cd /opt
@@ -21,5 +22,6 @@ runcmd:
   - mkdir -p -m 775 /Depot/Temporary
   - chown -R :turandot /Depot/Temporary
   - usermod -a -G turandot azureuser
+  - usermod -a -G docker azureuser
 
 final_message: "The system is finally up, after $UPTIME seconds."
