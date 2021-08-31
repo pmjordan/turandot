@@ -12,8 +12,9 @@ turandot operator install --role=view --site=central --wait -vv
 reposure operator install --role=view --wait -v
 reposure registry create default --provider=minikube --wait -v
 kubectl apply --filename=assets/kubernetes/cert-manager.yaml
+sleep 30 # wait for the line above to be processed
 reposure simple install --authentication --wait -v
-reposure registry create default --provider=simple --wait -v
+reposure registry create default --provider=minikube --wait -v
 minikube status
 reposure registry list
 cd ~

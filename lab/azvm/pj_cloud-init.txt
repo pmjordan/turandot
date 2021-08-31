@@ -14,7 +14,7 @@ groups:
 runcmd:
   - sudo chown azureuser:azureuser /home/azureuser
   - cd /opt
-  - git clone --branch lab --single-branch https://github.com/pmjordan/turandot.git
+  - git clone --branch mymaster --single-branch https://github.com/pmjordan/turandot.git
   - chown -R root:turandot /opt/turandot
   - chmod -R g+w /opt/turandot
   - /opt/turandot/lab/azvm/pj_install.sh
