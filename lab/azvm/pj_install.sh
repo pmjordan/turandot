@@ -10,7 +10,7 @@ cd /opt
 sudo git clone https://github.com/pmjordan/oda-canvas-charts
 
 # install turandot on Centos. Assumes required published packages already installed by cloud-init
-echo "this has been written by turandot script pj_install.sh " + $(date) >> ~/pj_turandot_install_logs.txt
+echo "this has been written by turandot script pj_install.sh " + $(date) >> /var/log/pj_turandot_install_logs.txt
 
 
 #Install turandot binary

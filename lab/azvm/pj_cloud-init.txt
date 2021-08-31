@@ -6,7 +6,7 @@ packages:
   - git
   - jq
   - pigz
-  - docker.io
+  - docker
   - zip
 groups:
   - turandot: [azureuser]
@@ -14,10 +14,10 @@ groups:
 runcmd:
   - sudo chown azureuser:azureuser /home/azureuser
   - cd /opt
-  - git clone --branch ubuntu --single-branch https://github.com/pmjordan/turandot.git
+  - git clone --branch lab --single-branch https://github.com/pmjordan/turandot.git
   - chown -R root:turandot /opt/turandot
   - chmod -R g+w /opt/turandot
-  - /opt/turandot/scripts/pj_install.sh
+  - /opt/turandot/lab/azvm/pj_install.sh
   - mkdir -p -m 775 /Depot/Temporary
   - chown -R :turandot /Depot/Temporary
   - usermod -a -G turandot azureuser
