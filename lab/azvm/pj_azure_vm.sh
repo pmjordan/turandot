@@ -3,11 +3,18 @@
 RESOURCEGROUP=MyVMResourceGroup
 LOCATION=uksouth
 VMNAME=myVM
+CLOUDINIT=pj_cloud-init.tx
 
 function create {
-    az group create --name $RESOURCEGROUP --location $LOCATION
-    az vm create --resource-group $RESOURCEGROUP --name $VMNAME --image OpenLogic:CentOS:8_2:latest --size Standard_B2ms --admin-username azureuser --generate-ssh-keys --custom-data lab/azvm/pj_cloud-init.txt
+    if [[ -e $CLOUDINIT ]]; then
+        az group create --name $RESOURCEGROUP --location $LOCATION
+        az vm create --resource-group $RESOURCEGROUP --name $VMNAME --image OpenLogic:CentOS:8_2:latest --size Standard_B2ms --admin-username azureuser --generate-ssh-keys --custom-data $CLOUDINIT
+    else
+        echo "cloud-init file $CLOUDINIT not found"
+        return 1
+    fi
 }
+
 
 
 function destroy {
@@ -22,8 +29,9 @@ function connect {
 case $1 in
 
     create)
-        create
+        if create; then
         connect
+        fi
     ;;
 
     destroy)
@@ -41,8 +49,9 @@ case $1 in
 
     rebuild)
         destroy
-        create
-        connect
+        if create; then
+            connect
+        fi
     ;;
 
     connect)
